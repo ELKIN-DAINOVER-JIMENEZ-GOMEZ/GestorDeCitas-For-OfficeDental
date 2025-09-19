@@ -3,7 +3,7 @@ services:
   - type: pserv
     name: mysql-db
     env: docker
-    dockerImage: mysql:8.0
+    Image: mysql:8.0
     plan: free
     disk:
       name: mysql_data
@@ -25,7 +25,7 @@ services:
     name: backend-app
     env: docker
     dockerfilePath: ./backend/Backend/Dockerfile
-    buildContext: ./backend/Backend
+    dockerContext: ./backend/Backend
     plan: free
     envVars:
       - key: BD_URL
@@ -51,7 +51,7 @@ services:
     name: frontend-app
     env: docker
     dockerfilePath: ./frontend/Frontend/Dockerfile
-    buildContext: ./frontend/Frontend
+    dockerContext: ./frontend/Frontend
     plan: free
     envVars:
       - key: NODE_ENV

@@ -50,7 +50,7 @@ services:
     name: frontend-app
     env: docker
     dockerfilePath: ./frontend/Frontend/Dockerfile
-    buildContext: ./frontend/Frontend
+    dockerContext: ./frontend/Frontend
     plan: free
     envVars:
       - key: NODE_ENV
