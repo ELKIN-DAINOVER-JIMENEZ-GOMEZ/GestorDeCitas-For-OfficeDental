@@ -1,0 +1,60 @@
+services:
+  # Base de datos MySQL
+  - type: pserv
+    name: mysql-db
+    image: mysql:8.0
+    plan: free
+    disk:
+      name: mysql_data
+      mountPath: /var/lib/mysql
+      sizeGB: 1
+    envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        value: elkin
+      - key: MYSQL_DATABASE
+        value: consultorioOdontologico_db
+      - key: MYSQL_USER
+        value: consultorio_user
+      - key: MYSQL_PASSWORD
+        value: consultorio_password
+    autoDeploy: true
+
+  # Backend Spring Boot
+  - type: web
+    name: backend-app
+    env: docker
+    dockerfilePath: ./backend/Backend/Dockerfile
+    buildContext: ./backend/Backend
+    plan: free
+    envVars:
+      - key: BD_URL
+        value: jdbc:mysql://mysql-db:3306/consultorioOdontologico_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - key: BD_USER_NAME
+        value: root
+      - key: PASSWORD
+        value: elkin
+      - key: BD_DRIVER
+        value: com.mysql.cj.jdbc.Driver
+      - key: KEY_SECRETS
+        value: uPifhWrNRf7QEVv989LmBKfxEgdVeHlQGq+lQyC8ThuUYXBa8e0Yg0+tmkhAA/CpFv245Q9XGlorSP+ztihl/w==
+      - key: EXPIRATIONS
+        value: "86400000"
+      - key: HIBERNATE_DIALECT
+        value: org.hibernate.dialect.MySQLDialect
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+    autoDeploy: true
+
+  # Frontend React/Vite
+  - type: web
+    name: frontend-app
+    env: docker
+    dockerfilePath: ./frontend/Frontend/Dockerfile
+    buildContext: ./frontend/Frontend
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: development
+      - key: VITE_API_URL
+        value: https://backend-app.onrender.com
+    autoDeploy: true
