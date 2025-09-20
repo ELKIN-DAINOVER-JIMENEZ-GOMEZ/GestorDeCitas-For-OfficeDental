@@ -1,23 +1,23 @@
 services:
-  # Base de datos MySQL
+  # Base de datos PostgreSQL
   - type: pserv
-    name: mysql-db
+    name: postgresql-db
     env: docker
-    Image: mysql:8.0
+    image: postgres:15
     plan: free
     disk:
-      name: mysql_data
-      mountPath: /var/lib/mysql
+      name: postgres_data
+      mountPath: /var/lib/postgresql/data
       sizeGB: 1
     envVars:
-      - key: MYSQL_ROOT_PASSWORD
+      - key: POSTGRES_DB
+        value: consultorio_odontologico_db
+      - key: POSTGRES_USER
+        value: postgres
+      - key: POSTGRES_PASSWORD
         value: elkin
-      - key: MYSQL_DATABASE
-        value: consultorioOdontologico_db
-      - key: MYSQL_USER
-        value: consultorio_user
-      - key: MYSQL_PASSWORD
-        value: consultorio_password
+      - key: PGDATA
+        value: /var/lib/postgresql/data/pgdata
     autoDeploy: true
 
   # Backend Spring Boot
@@ -29,21 +29,23 @@ services:
     plan: free
     envVars:
       - key: BD_URL
-        value: jdbc:mysql://mysql-db:3306/consultorioOdontologico_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+        value: jdbc:postgresql://postgresql-db:5432/consultorio_odontologico_db
       - key: BD_USER_NAME
-        value: root
+        value: postgres
       - key: PASSWORD
         value: elkin
       - key: BD_DRIVER
-        value: com.mysql.cj.jdbc.Driver
+        value: org.postgresql.Driver
       - key: KEY_SECRETS
         value: uPifhWrNRf7QEVv989LmBKfxEgdVeHlQGq+lQyC8ThuUYXBa8e0Yg0+tmkhAA/CpFv245Q9XGlorSP+ztihl/w==
       - key: EXPIRATIONS
         value: "86400000"
       - key: HIBERNATE_DIALECT
-        value: org.hibernate.dialect.MySQLDialect
+        value: org.hibernate.dialect.PostgreSQLDialect
       - key: SPRING_PROFILES_ACTIVE
         value: prod
+      - key: HIBERNATE_DDL_AUTO
+        value: update
     autoDeploy: true
 
   # Frontend React/Vite
@@ -55,7 +57,7 @@ services:
     plan: free
     envVars:
       - key: NODE_ENV
-        value: development
+        value: production
       - key: VITE_API_URL
         value: https://backend-app.onrender.com
     autoDeploy: true

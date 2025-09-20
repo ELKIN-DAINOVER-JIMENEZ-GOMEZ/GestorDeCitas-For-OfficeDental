@@ -1,6 +1,0 @@
-[submodule "backend"]
-	path = backend
-	url = https://github.com/ELKIN-DAINOVER-JIMENEZ-GOMEZ/Gestor-de-citas-backend.git
-[submodule "frontend"]
-	path = frontend
-	url = https://github.com/ELKIN-DAINOVER-JIMENEZ-GOMEZ/Gestor-de-citas-frontend.git
