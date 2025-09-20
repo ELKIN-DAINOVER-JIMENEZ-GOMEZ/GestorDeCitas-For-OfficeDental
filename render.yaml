@@ -1,25 +1,11 @@
-services:
-  # Base de datos PostgreSQL
-  - type: pserv
-    name: postgresql-db
-    env: docker
-    image: postgres:15
+databases:
+  # Base de datos PostgreSQL nativa de Render
+  - name: consultorio-odontologico-db
+    databaseName: consultorio_odontologico_db
+    user: consultorio_odontologico_db
     plan: free
-    disk:
-      name: postgres_data
-      mountPath: /var/lib/postgresql/data
-      sizeGB: 1
-    envVars:
-      - key: POSTGRES_DB
-        value: consultorio_odontologico_db
-      - key: POSTGRES_USER
-        value: postgres
-      - key: POSTGRES_PASSWORD
-        value: elkin
-      - key: PGDATA
-        value: /var/lib/postgresql/data/pgdata
-    autoDeploy: true
 
+services:
   # Backend Spring Boot
   - type: web
     name: backend-app
@@ -28,12 +14,22 @@ services:
     dockerContext: ./backend/Backend
     plan: free
     envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: consultorio-odontologico-db
+          property: connectionString
       - key: BD_URL
-        value: jdbc:postgresql://postgresql-db:5432/consultorio_odontologico_db
+        fromDatabase:
+          name: consultorio-odontologico-db
+          property: connectionString
       - key: BD_USER_NAME
-        value: postgres
+        fromDatabase:
+          name: consultorio-odontologico-db
+          property: user
       - key: PASSWORD
-        value: elkin
+        fromDatabase:
+          name: consultorio-odontologico-db
+          property: password
       - key: BD_DRIVER
         value: org.postgresql.Driver
       - key: KEY_SECRETS
